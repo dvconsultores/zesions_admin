@@ -4,23 +4,18 @@
       <v-card class="auth-card">
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
-          <router-link
-            to="/"
-            class="d-flex align-center"
-          >
             <v-img
-              :src="require('@/assets/images/defix/logo.png')"
-              max-height="30px"
-              max-width="30px"
+              :src="require('@/assets/images/zesions/logo.jpg')"
+              max-height="180px"
+              max-width="50px"
               alt="logo"
               contain
               class="me-3 "
             ></v-img>
 
             <h2 class="text-2xl font-weight-semibold">
-              deFix3
+              Zesions
             </h2>
-          </router-link>
         </v-card-title>
 
         <!-- login form -->
@@ -31,6 +26,7 @@
               outlined
               label="Email or Username"
               hide-details
+              required
               class="mb-3"
             ></v-text-field>
 

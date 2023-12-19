@@ -139,7 +139,7 @@ export default {
                 title: element.coin,
                 total: element.balance.toFixed(4),
                 usdPrice: currentPriceUsd.toLocaleString('en-US', noTruncarDecimales),
-                img: require('@/assets/images/defix/coins/' + element.coin + '.png')
+                img: require('@/assets/images/zesions/coins/' + element.coin + '.png')
               })
             }
           });

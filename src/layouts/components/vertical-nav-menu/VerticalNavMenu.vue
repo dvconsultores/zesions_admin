@@ -16,7 +16,7 @@
         class="d-flex align-center text-decoration-none"
       >
         <v-img
-          :src="require('@/assets/images/defix/logo.png')"
+          :src="require('@/assets/images/zesions/logo.jpg')"
           max-height="40px"
           max-width="40px"
           alt="logo"
@@ -26,7 +26,7 @@
         ></v-img>
         <v-slide-x-transition>
           <h2 class="app-title text--primary">
-            deFix3
+            Zesions
           </h2>
         </v-slide-x-transition>
       </router-link>
@@ -118,8 +118,8 @@ export default {
           element.text = 'Balance'
           element.icon = mdiHomeOutline
           element.to = '/dashboard'
-        } else if (element.modulo === 'UsuariosDefix') {
-          element.text = 'Usuarios deFix3'
+        } else if (element.modulo === 'UsuariosSezions') {
+          element.text = 'Usuarios Sezions'
           element.icon = mdiAccountDetailsOutline
           element.to = '/pages/users-defix'
         } else if (element.modulo === 'Transacciones') {
