@@ -666,7 +666,7 @@ export default {
     },
     eliminar () {
       this.dialogSure = false
-      this.axios.delete('https://testnet.defix3.com/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
+      this.axios.delete('https://develop.globaldv.tech/zesions_backend/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
       //this.axios.delete('http://127.0.0.1:8000/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
         console.log(res)
         this.snackbar = true

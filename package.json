@@ -1,11 +1,11 @@
 {
-  "name": "defix3-admin",
-  "description": "Proyecto de administracion del aplicativo defix3",
+  "name": "zesion-admin",
+  "description": "Proyecto de administracion del aplicativo zesions",
   "license": "MIT",
   "version": "1.0.3",
   "author": {
     "name": "GlobalDv",
-    "url": "https://admin.defix3.com/"
+    "url": "https://dvconsultores.com/"
   },
   "bugs": {
     "url": "https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free/issues"
@@ -15,10 +15,10 @@
     "type": "git",
     "url": "git+https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
   },
-  "homepage": "https://admin.defix3.com/",
+  "homepage": "https://dvconsultores.com/",
   "keywords": [
-    "administrador defix3",
-    "admin defix3"
+    "administrador zesions",
+    "admin zesions"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
