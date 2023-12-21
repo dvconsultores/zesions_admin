@@ -16,7 +16,7 @@
         class="d-flex align-center text-decoration-none"
       >
         <v-img
-          :src="require('@/assets/images/zesions/logo.jpg')"
+          :src="require('@/assets/images/sezions/logo.jpg')"
           max-height="40px"
           max-width="40px"
           alt="logo"
@@ -26,14 +26,14 @@
         ></v-img>
         <v-slide-x-transition>
           <h2 class="app-title text--primary">
-            Zesions
+            Sezions
           </h2>
         </v-slide-x-transition>
       </router-link>
     </div>
-    <nav-menu-section-title title=""></nav-menu-section-title>
     <!-- Navigation Items -->
     <v-list
+      v-if="items.length > 0"
       expand
       shaped
       class="vertical-nav-menu-items pr-5"
@@ -49,7 +49,7 @@
       >
         <v-list-item-icon>
           <v-icon
-            :class="{'alternate-icon-small': !icon}"
+            :class="{'alternate-icon-small': !item.icon}"
             class="mx-auto"
           >
             {{ item.icon }}
@@ -59,7 +59,6 @@
           {{ item.text }}
         </v-list-item-title>
       </v-list-item>
-      <nav-menu-section-title title=""></nav-menu-section-title>
     </v-list>
   </v-navigation-drawer>
 </div>
@@ -77,12 +76,10 @@ import {
   mdiAccountCogOutline,
   mdiAccountDetailsOutline,
 } from '@mdi/js'
-// import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 
 export default {
-  components: {
-    // NavMenuSectionTitle,
-  },
+  name: "VerticalNavMenu",
+  components: {},
   props: {
     isDrawerOpen: {
       type: Boolean,
@@ -91,7 +88,8 @@ export default {
   },
   data() {
     return {
-      permisos: JSON.parse(localStorage.permisos),
+      items: [],
+      permissions: JSON.parse(localStorage.getItem("permissions")) || [],
       icons: {
         mdiHomeOutline,
         mdiAlphaTBoxOutline,
@@ -104,16 +102,14 @@ export default {
         mdiAccountDetailsOutline,
       },
       selectedItem: 1,
-      items: [],
     }
   },
   mounted() {
-    this.permissions()
-    // console.log(this.permisos)
+    if (this.permissions.length > 0) {this.get_permission()}
   },
   methods: {
-    permissions () {
-      this.permisos.forEach(element => {
+    get_permission () {
+      this.permissions.forEach(element => {
         if (element.modulo === 'Balance') {
           element.text = 'Balance'
           element.icon = mdiHomeOutline
@@ -121,37 +117,32 @@ export default {
         } else if (element.modulo === 'UsuariosSezions') {
           element.text = 'Usuarios Sezions'
           element.icon = mdiAccountDetailsOutline
-          element.to = '/pages/users-defix'
+          element.to = '/pages/UsersSezions'
         } else if (element.modulo === 'Transacciones') {
           element.text = 'Transacciones'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/trans-history'
+          element.to = '/pages/Transactions'
         } else if (element.modulo === 'UsersAdmin') {
           element.text = 'Usuarios del sistema'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/pages/register'
-        }
-          else if (element.modulo === 'Comisiones')  {
+          element.to = '/pages/Register'
+        } else if (element.modulo === 'Comisiones')  {
           element.text = 'Comisiones'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/pages/commissions'
-        }
-          else if (element.modulo === 'Paises')  {
+          element.to = '/pages/Commissions'
+        } else if (element.modulo === 'Paises')  {
           element.text = 'Países'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/pages/countries'
-        }
-          else if (element.modulo === 'KYC')  {
+          element.to = '/pages/Countries'
+        } else if (element.modulo === 'KYC')  {
           element.text = 'KYC'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/pages/kyc'
-        }
-        else if (element.modulo === 'fiat')  {
+          element.to = '/pages/KYC'
+        } else if (element.modulo === 'fiat')  {
           element.text = 'FIAT'
           element.icon = mdiAlphaTBoxOutline
-          element.to = '/pages/fiat'
-        }
-        else if (element.modulo === 'tasa')  {
+          element.to = '/pages/Fiat'
+        } else if (element.modulo === 'tasa')  {
           element.text = 'TASA'
           element.icon = mdiAlphaTBoxOutline
           element.to = '/pages/tasa'

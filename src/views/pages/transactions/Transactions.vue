@@ -72,6 +72,7 @@
 <script>
   import { mdiOrbitVariant } from '@mdi/js'
   export default {
+    name: "Transactions",
     data () {
       return {
         search: '',
@@ -93,14 +94,12 @@
       }
     },
     mounted() {
-      console.log(process.env.NODE_ENV)
       this.historyTrans()
     },
     methods: {
       historyTrans() {
         this.dialogWait = true
         this.axios.post('/get-transaction-history', {
-          defixId: "%%",
           coin: "%%",
           date_year: "%%",
           date_month: "%%"
@@ -125,8 +124,8 @@
               }
             }
             this.dataHistoryC.push({
-              emisor: element.from_defix,
-              receptor: element.to_defix,
+              emisor: element.from_sezions,
+              receptor: element.to_sezions,
               fecha: element.date_fech,
               moneda: element.coin,
               valor: parseFloat(element.value).toFixed(4),
@@ -141,10 +140,6 @@
           console.log(err)
         })
       },
-      // formatDate(date) {
-      //   console.log(date)
-      //   return date
-      // },
       date () {
         this.dataHistory = []
         this.dataHistoryC.forEach(element => {

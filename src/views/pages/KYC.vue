@@ -208,7 +208,7 @@
       top
       absolute
       :color="color"
-      :multi-line="multiLine"
+      multi-line
       elevation="24"
     >
       {{ text }}
@@ -250,6 +250,7 @@ import {
 import { ref } from '@vue/composition-api'
 
 export default {
+  name: "KYCPage",
   data() {
     return {
       snackbar: false,
@@ -336,7 +337,7 @@ export default {
         juridico:'',
       },
      // tipo: '',
-      permisosUser: JSON.parse(localStorage.permisos),
+      permissions: JSON.parse(localStorage.getItem("permissions")),
       usersAdmin: [],
       dialogWait: false,
       dialogSure: false,
@@ -346,12 +347,11 @@ export default {
     }
   },
   mounted() {
-    this.permisosUser.forEach(i => {
+    this.permissions.forEach(i => {
       if (i.modulo === 'UsersAdmin') {
         this.usersAdmin = i
      }
     })
-   console.log(this.usersAdmin)
     this.fecthData()
   },
   methods: {
@@ -377,7 +377,6 @@ export default {
       //this.axios.get('/kycdetalle/?kyccabecera='+id).then(response => {
       this.axios.get('/get-kycdetalle/'+id+'').then(response => {
           this.dataKYC = response.data
-          console.log('lola2',this.dataKYC)
         }).catch(err => {
           console.log(err)
         })
@@ -396,7 +395,6 @@ export default {
     },
     actualizarEstatus(item){     
       this.axios.patch('/kyccabecera/'+ item.id + '/', {'estatus':item.estatus}).then((res) => {
-        console.log(res.data)
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se actualizo el estatus correctamente'
@@ -410,7 +408,6 @@ export default {
     },
     actualizarEstatusDoc(item){  
       this.axios.patch('/paisesdoc/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
-        console.log(res.data)
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se actualizo el estatus correctamente'
@@ -424,7 +421,6 @@ export default {
       });
     },
     openEditar(item){
-      console.log(item)
       this.dialog_edit = true
       this.registro.id = item.id
       this.registro.imagen = item.imagen
@@ -437,7 +433,6 @@ export default {
       this.fecthDataDoc(item.id)
     },
     openEditarDoc(item){
-      console.log(item)
       this.dialog_edit_Doc = true
       this.registroDoc.id = item.id
       this.registroDoc.nombre = item.nombre
@@ -454,14 +449,9 @@ export default {
           formData.append('numero', this.registro.id)
           formData.append('email', this.registro.email)
           formData.append('user_kyc', this.registro.observacion)
-          this.axios.put( '/SendEmailEstatusKYC', formData).then((resi)=>{
-              console.log(resi)
-            }).catch((error) => {
-              console.error(error)
-            })
-
-
-
+          this.axios.put( '/SendEmailEstatusKYC', formData).catch((error) => {
+            console.error(error)
+          })
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se actualizo correctamente'

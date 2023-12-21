@@ -297,7 +297,7 @@
 
 
     <!-- SNACKBAR MENSAJES -->
-    <v-snackbar v-model="snackbar" right top absolute :color="color" :multi-line="multiLine" elevation="24">
+    <v-snackbar v-model="snackbar" right top absolute :color="color" multi-line elevation="24">
       {{ text }}
 
       <template v-slot:action="{ attrs }">
@@ -334,11 +334,12 @@ import {
 import { ref } from '@vue/composition-api'
 
 export default {
+  name: "FiatPage",
   data() {
     return {
       orbit: mdiOrbitVariant,
       from_date: '2022-01-01',
-      to_date: '2022-12-31',
+      to_date: '2023-12-31',
       snackbar: false,
       text: '',
       color: '',
@@ -434,7 +435,7 @@ export default {
         estatus4:false,
         estatus5:false,
       },
-      permisosUser: JSON.parse(localStorage.permisos),
+      permissions: JSON.parse(localStorage.getItem("permissions")),
       usersAdmin: [],
       dialogWait: false,
       dialogSure: false,
@@ -442,12 +443,11 @@ export default {
     }
   },
   mounted() {
-    this.permisosUser.forEach(i => {
+    this.permissions.forEach(i => {
       if (i.modulo === 'UsersAdmin') {
         this.usersAdmin = i
      }
     })
-   console.log(this.usersAdmin)
     this.fecthData()
   },
   methods: {
@@ -482,14 +482,6 @@ export default {
       this.axios.get('/get-fiat-estatus/'+this.registro.id+'').then(response => {
           this.dataestatusfiat = response.data
           this.dialogWait = false
-          //this.item.estatus=this.dataestatusfiat.estatus
-          //this.registro.fecha_asignado=this.dataestatusfiat.fecha_asignado
-          //this.item.fecha_asignado=this.dataestatusfiat.fecha_asignado
-          //this.item.fecha_procesado=this.dataestatusfiat.fecha_procesado
-          //this.item.fecha_completado=this.dataestatusfiat.fecha_completado
-          //this.item.fecha_anulado=this.dataestatusfiat.fecha_anulado
-          console.log('lola',this.dataestatusfiat )
-
         }).catch(err => {
           console.log(err)
         })
@@ -555,7 +547,6 @@ export default {
          this.habilitar.opcion5=true
       }
         this.axios.put('/put-fecha-fiat' , {'datos':item}).then((res) => {
-        console.log(res.data)
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se actualizo el estatus correctamente'
@@ -576,7 +567,6 @@ export default {
       });
     },
     openEditar(item){
-      console.log(item)
       this.dialog_edit = true
       this.registro = item
 
@@ -631,9 +621,7 @@ export default {
     },
     date () {
         this.data = []
-        console.log('lola2',this.from_date,this.to_date)
         this.datat.forEach(element => {
-          console.log('lola3',element.fecha_creado,this.from_date,element.fecha_creado,this.to_date)
           if (element.fecha_creado>=this.from_date && element.fecha_creado <= this.to_date) {
             this.data.push(element)
           }

@@ -13,6 +13,7 @@
 import { mdiWeatherNight, mdiWeatherSunny } from '@mdi/js'
 
 export default {
+  name: "ThemeSwitcher",
   setup() {
     return {
       icons: {

@@ -12,7 +12,7 @@
           :items-per-page="10"
           class="elevation-1"
         >
-          <template v-slot:item.transfer="{ item }">
+          <template v-slot:[`item.transfer`]="{ item }">
             <v-row>
               <v-col class="col-10">
                 <v-text-field
@@ -24,7 +24,7 @@
               </v-col>
             </v-row>
           </template>
-          <template v-slot:item.swap="{ item }">
+          <template v-slot:[`item.swap`]="{ item }">
             <v-row>
               <v-col class="col-10">
                 <v-text-field
@@ -38,19 +38,7 @@
               </v-col>
             </v-row>
           </template>
-          <!-- <template v-slot:item.fiat="{ item }">
-            <v-row>
-              <v-col class="col-10">
-                <v-text-field
-                  v-model="item.fiat"
-                  type="number"
-                  dense
-                  :append-outer-icon="iconPercent"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </template> -->
-          <template v-slot:item.acciones="{ item }">
+          <template v-slot:[`item.acciones`]="{ item }">
             <v-icon
               color="success"
               dark
@@ -89,21 +77,21 @@
 
   <!-- SNACKBAR MENSAJES -->
     <v-snackbar
-      v-model="snackbar"
+      v-model="snack_visible"
       right
       top
       absolute
-      :color="color"
-      :multi-line="multiLine"
+      :color="snack_color"
+      multi-line
       elevation="24"
     >
-      {{ text }}
+      {{ snack_text }}
 
       <template v-slot:action="{ attrs }">
         <v-btn
           text
           v-bind="attrs"
-          @click="snackbar = false"
+          @click="snack_visible = false"
         >
           Cerrar
         </v-btn>
@@ -117,6 +105,7 @@
 import { mdiPercentOutline, mdiContentSaveOutline, mdiCurrencyUsd  } from '@mdi/js'
 
 export default {
+  name: "Commissions",
   data() {
     return {
       headers: [
@@ -132,8 +121,11 @@ export default {
       iconPercent: mdiPercentOutline,
       iconSave: mdiContentSaveOutline,
       iconDollar: mdiCurrencyUsd,
-      snackbar: false,
-      text: '',
+      
+      // Snackbar values
+      snack_visible: false,
+      snack_text: '',
+      snack_color: '',
     }
   },
   mounted() {
@@ -141,12 +133,8 @@ export default {
   },
   methods: {
     commissionsData() {
-      //this.dialogWait = true
-      // this.axios.defaults.headers.common.Authorization = localStorage.Authorization
+      this.dataCommissions = []
       this.axios.get('/comisiones/').then(response => {
-        //this.dialogWait = false
-        
-        console.log(response.data)
         var icon = ''
         var disabled = false
         response.data.forEach(element => {
@@ -175,21 +163,19 @@ export default {
       })
     },
     saveCommission (item) {
-      console.log(item)
       this.axios.patch('/comisiones/' + item.coin + '/', {
         transfer: item.transfer,
         swap: item.swap,
         fiat: item.fiat
-      }).then(res => {
-        console.log(res)
-        this.snackbar = true
-        this.text = 'Se guardo exitosamente'
-        this.dataCommissions = []
+      }).then(() => {
+        this.snack_visible = true
+        this.snack_text = 'Se guardo exitosamente'
+        this.snack_color = "success"
         this.commissionsData()
       }).catch(err => {
-        this.snackbar = true
-        this.text = 'Ocurrio un error' + err
-        console.log(err)
+        this.snack_visible = true
+        this.snack_color = "error"
+        this.snack_text = 'Ocurrio un error' + err
       })
     },
   },

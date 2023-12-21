@@ -11,6 +11,7 @@ import LayoutBlank from '@/layouts/Blank.vue'
 import LayoutContent from '@/layouts/Content.vue'
 
 export default {
+  name: "AppMainPage",
   components: {
     LayoutBlank,
     LayoutContent,
@@ -19,11 +20,8 @@ export default {
     const { route } = useRouter()
 
     const resolveLayout = computed(() => {
-      // Handles initial route
       if (route.value.name === null) return null
-
       if (route.value.meta.layout === 'blank') return 'layout-blank'
-
       return 'layout-content'
     })
 
@@ -32,10 +30,9 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.Authorization !== undefined) {
-      this.axios.defaults.headers.common.Authorization = 'token ' + localStorage.Authorization
-    } else {
-      this.$router.push('/pages/login')
+    if (localStorage.auth_token !== undefined) {
+      this.axios.defaults.headers.common.Authorization = 'token ' + localStorage.auth_token
+    } else { this.$router.push('/login')
     }
     
   },

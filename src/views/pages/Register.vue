@@ -441,7 +441,7 @@
       top
       absolute
       :color="color"
-      :multi-line="multiLine"
+      multi-line
       elevation="24"
     >
       {{ text }}
@@ -473,6 +473,7 @@ import {
 import { ref } from '@vue/composition-api'
 
 export default {
+  name: "RegisterPage",
   data() {
     return {
       snackbar: false,
@@ -515,7 +516,7 @@ export default {
       ],
       permisos: [
         {
-          nombre: "UsuariosDefix",
+          nombre: "UsuariosSezions",
           leer: false,
           escribir: false,
           borrar: false,
@@ -555,7 +556,7 @@ export default {
           todo: false,
         },
       ],
-      permisosUser: JSON.parse(localStorage.permisos),
+      permissions: JSON.parse(localStorage.getItem("permissions")),
       usersAdmin: [],
       dialogWait: false,
       dialogSure: false,
@@ -563,12 +564,11 @@ export default {
     }
   },
   mounted() {
-    this.permisosUser.forEach(i => {
+    this.permissions.forEach(i => {
       if (i.modulo === 'UsersAdmin') {
         this.usersAdmin = i
       }
     })
-    console.log(this.usersAdmin)
     this.fecthData()
   },
   methods: {
@@ -594,7 +594,6 @@ export default {
         item.borrar = false
         item.actualizar = false
       }
-      console.log(item)
     },
     createUser () {
       const data = {
@@ -604,9 +603,7 @@ export default {
         tipo: this.tipo,
         permisos: this.permisos,
       }
-      console.log(data)
       this.axios.post('/crear-usuario/', data).then((res) => {
-        console.log(res.data)
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se guardo correctamente'
@@ -620,7 +617,6 @@ export default {
     },
     actualizarEstatus(item){
       this.axios.patch('/perfiles/' + item.id + '/', {'activo':item.activo}).then((res) => {
-        console.log(res.data)
         this.snackbar = true
         this.color = 'primary'
         this.text = 'Se actualizo el estatus correctamente'
@@ -633,7 +629,6 @@ export default {
       });
     },
     openEditar(item){
-      console.log(item)
       this.dialog_edit = true
       this.registro.id = item.id
       this.registro.username = item.username
@@ -666,7 +661,7 @@ export default {
     },
     eliminar () {
       this.dialogSure = false
-      this.axios.delete('https://develop.globaldv.tech/zesions_backend/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
+      this.axios.delete('https://develop.globaldv.tech/sezions_backend/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
       //this.axios.delete('http://127.0.0.1:8000/api/v1/usuarios/' + this.dataDelete.id + '/').then(res => {
         console.log(res)
         this.snackbar = true

@@ -1,5 +1,12 @@
 <template>
-  <v-app>
+  <v-app v-if="isLoginPage">
+    <v-main>
+      <div class="app-content-container boxed-container pa-6">
+        <slot></slot>
+      </div>
+    </v-main>
+  </v-app>
+  <v-app v-else>
     <vertical-nav-menu :is-drawer-open.sync="isDrawerOpen"></vertical-nav-menu>
 
     <v-app-bar
@@ -15,38 +22,12 @@
             class="d-block d-lg-none me-2"
             @click="isDrawerOpen = !isDrawerOpen"
           ></v-app-bar-nav-icon>
-          <!-- <v-text-field
-            rounded
-            dense
-            outlined
-            :prepend-inner-icon="icons.mdiMagnify"
-            class="app-bar-search flex-grow-0"
-            hide-details
-          ></v-text-field> -->
 
           <v-spacer></v-spacer>
 
-          <!-- Right Content -->
-          <!-- <a
-            href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
-            target="_blank"
-            rel="nofollow"
-          >
-            <v-icon class="ms-6 me-4">
-              {{ icons.mdiGithub }}
-            </v-icon>
-          </a> -->
           <theme-switcher></theme-switcher>
-          <!-- <v-btn
-            icon
-            small
-            class="ms-3"
-          >
-            <v-icon>
-              {{ icons.mdiBellOutline }}
-            </v-icon>
-          </v-btn> -->
-          <app-bar-user-menu></app-bar-user-menu>
+
+          <app-bar-user-menu @logOut="logOut"></app-bar-user-menu>
         </div>
       </div>
     </v-app-bar>
@@ -68,28 +49,11 @@
       <div class="boxed-container w-full">
         <div class="mx-6 d-flex justify-space-between">
           <span>
-            &copy; 2022 <a
+            &copy; 2023 <a
               href="https://themeselection.com"
               class="text-decoration-none"
               target="_blank"
             ></a></span>
-          <!-- <span class="d-sm-inline d-none">
-            <a
-              href="https://themeselection.com/products/category/download-free-admin-templates/"
-              target="_blank"
-              class="me-6 text--secondary text-decoration-none"
-            >Freebies</a>
-            <a
-              href="https://themeselection.com/blog/"
-              target="_blank"
-              class="me-6 text--secondary text-decoration-none"
-            >Blog</a>
-            <a
-              href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free/blob/main/LICENSE"
-              target="_blank"
-              class="text--secondary text-decoration-none"
-            >MIT Licence</a>
-          </span> -->
         </div>
       </div>
     </v-footer>
@@ -104,10 +68,22 @@ import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import AppBarUserMenu from './components/AppBarUserMenu.vue'
 
 export default {
+  name: "Content",
+  data () {
+    return {
+      dataUser: null
+  }},
   components: {
     VerticalNavMenu,
     ThemeSwitcher,
     AppBarUserMenu,
+  },
+  computed: {
+    isLoginPage() {
+      return this.$route.path === '/login';
+    }
+  },
+  mounted() {
   },
   setup() {
     const isDrawerOpen = ref(null)
@@ -123,6 +99,17 @@ export default {
       },
     }
   },
+  methods: {
+    logOut() {
+      this.dataUser = null
+      localStorage.removeItem('data_user');
+      localStorage.removeItem('email');
+      localStorage.removeItem('iduser');
+      localStorage.removeItem('permissions');
+      localStorage.removeItem('auth_token');
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 

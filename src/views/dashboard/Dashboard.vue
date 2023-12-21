@@ -91,14 +91,13 @@
 
 <script>
 import axios from 'axios'
-// eslint-disable-next-line object-curly-newline
 import { mdiAccountOutline, mdiCurrencyUsd, mdiTrendingUp, mdiDotsVertical, mdiLabelOutline, mdiCurrencyBtc, mdiEthereum } from '@mdi/js'
-// import StatisticsCardVertical from '@/components/statistics-card/StatisticsCardVertical.vue'
-
 import TotalTransaction from './totalTransaction.vue'
+
 const BINANCE_NEAR = 'https://api.binance.com/api/v3/ticker/24hr?symbol=NEARUSDT'
 
 export default {
+  name: "Dashboard",
   components: {
     TotalTransaction,
   },
@@ -111,15 +110,14 @@ export default {
     }
   },
   mounted() {
-    this.dataCoinGecko()
-    this.balance()
+    this.dataCoinGecko();
+    this.balance();
   },
   methods: {
     async dataCoinGecko () {
       this.dialogWait = true
       this.coinGecko = []
       axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(res => {
-        console.log(res.data)
         this.coinGecko = res.data
       })
     },
@@ -128,7 +126,7 @@ export default {
       this.dialogWait = true
       var image = ''
       var currentPriceUsd = 0
-      this.axios.get('/get-balance-defix').then(response => {
+      this.axios.get('/get-balance-sezions').then(response => {
         response.data.forEach(element => {
           this.coinGecko.forEach(item => {
             currentPriceUsd = 0
@@ -139,7 +137,7 @@ export default {
                 title: element.coin,
                 total: element.balance.toFixed(4),
                 usdPrice: currentPriceUsd.toLocaleString('en-US', noTruncarDecimales),
-                img: require('@/assets/images/zesions/coins/' + element.coin + '.png')
+                img: require('@/assets/images/sezions/coins/' + element.coin + '.png')
               })
             }
           });

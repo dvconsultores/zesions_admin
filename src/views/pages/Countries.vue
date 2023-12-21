@@ -152,17 +152,6 @@
                   dense
                 />
               </v-col>
-              <!--v-col class="col-3">
-                <v-text-field
-                  v-model="tasa"
-                  outlined
-                  label="tasa"
-                  placeholder="tasa"
-                  hide-details
-                  class="mb-3"
-                  dense
-                />
-              </!v-col-->
               <v-col class="col-2 mb-0">
                 <v-switch
                   v-model="kycventa"
@@ -181,67 +170,33 @@
                 />coin
               </v-col>
 
-              <!--v-col class="col-2">
-                <v-text-field
-                  v-model="montocompra"
-                  outlined
-                  label="Monto mínimo Compra"
-                  placeholder="Monto mínimo Compra"
-                  hide-details
-                  class="mb-3"
-                  type="number"
-                  dense
-                />
-              </!--v-col>
-              <v-col-- class="col-2">
-                <v-text-field
-                  v-model="montoventa"
-                  outlined
-                  label="Monto mínimo Venta"
-                  placeholder="Monto mínimo Venta"
-                  hide-details
-                  class="mb-3"
-                  type="number"
-                  dense
-                />
-              </v-col-->
-
-
-
-              <v-form
-                  ref="form"
-                  v-model="valid1"
-                  lazy-validation
-                >
-                  <v-row>
-                    <v-col
-                      md="10"
+              <v-form ref="form" lazy-validation>
+                <v-row>
+                  <v-col
+                    md="10"
+                  >
+                    <v-file-input 
+                      @change="Preview_image"
+                      v-model="registro.imagen"
+                      accept="image/*"
+                      label="Cargar nueva Bandera"
+                    />
+                  </v-col>
+                  <v-col md="2">
+                    <v-btn
+                      icon
+                      x-large
+                      color="primary"
+                      @click="uploadBandera"
                     >
-                      <v-file-input 
-                        @change="Preview_image"
-                        v-model="registro.imagen"
-                        accept="image/*"
-                        label="Cargar nueva Bandera"
-                      />
-                    </v-col>
-                    <v-col
-                        md="2"
-                      >
-                        <v-btn
-                          icon
-                          x-large
-                          color="primary"
-                          @click="uploadBandera"
-                        >
-                          <v-icon>
-                            mdi-upload
-                          </v-icon>
-                        </v-btn>
-                      </v-col>
-                  </v-row>
-                  <v-img :src="url"></v-img>
-           
-                </v-form>              
+                      <v-icon>
+                        mdi-upload
+                      </v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-img :src="url"></v-img>
+              </v-form>              
               
               <v-btn
                 block
@@ -373,7 +328,7 @@
                 />
               </!--v-col-->
               <v-col class="col-6 mb-0">
-                <v-form ref="form" v-model="valid1" lazy-validation>
+                <v-form ref="form" lazy-validation>
                   <v-row>
                     <v-col md="10">
                       <v-file-input @change="Preview_image" v-model="registro.imagen" accept="image/*" label="Cargar Bandera" />
@@ -500,7 +455,7 @@
                 <v-col cols="12" class="mb-6">
                   <v-card>
                     <v-card-title>
-                      Cuentas FIAT de Defix por País
+                      Cuentas FIAT de Sezions por País
                       <v-spacer />
                       <v-btn icon @click="dialogCuenta = true">
                         <v-icon dark color="primary" v-if="usersAdmin.escribir">
@@ -1274,7 +1229,7 @@
       top
       absolute
       :color="color"
-      :multi-line="multiLine"
+      multi-line
       elevation="24"
     >
       {{ text }}
@@ -1294,626 +1249,607 @@
 </template>
 
 <script>
-// eslint-disable-next-line object-curly-newline
-import {
-  mdiAccountPlus,
-  mdiEyeOutline,
-  mdiEyeOffOutline,
-  mdiClose,
-  mdiPencil,
-  mdiDelete,
-  mdiTextBoxPlusOutline  ,
-  mdiEarthPlus ,
-  mdiCashPlus ,
-  mdiCheckCircle,
-  mdiCancel ,
-  mdiScaleBalance,
-  mdiAccountTie ,
-  mdiBankPlus,
-  mdiContentDuplicate,
+  import {
+    mdiAccountPlus,
+    mdiEyeOutline,
+    mdiEyeOffOutline,
+    mdiClose,
+    mdiPencil,
+    mdiDelete,
+    mdiTextBoxPlusOutline  ,
+    mdiEarthPlus ,
+    mdiCashPlus ,
+    mdiCheckCircle,
+    mdiCancel ,
+    mdiScaleBalance,
+    mdiAccountTie ,
+    mdiBankPlus,
   } from '@mdi/js'
-import { ref } from '@vue/composition-api'
 
-
-export default {
-  data() {
-    return {
-      snackbar: false,
-      text: '',
-      color: '',
-      search: '',
-      headers: [
-        { text: 'País', value: 'nombre'},
-        { text: 'Moneda', value: 'coin'},
-        { text: 'Bandera', value: 'imagen'},
-        { text: 'Activo', value: 'habilitado'},
-        { text: 'Valida KYC Venta', value: 'kycventa'},
-        { text: 'Valida KYC Compra', value: 'kyccompra'},
-        //{ text: 'Monto Mínimo Venta',  value: 'montoventa',  align: 'right'},
-        //{ text: 'Monto Mínimo Compra', value: 'montocompra', align: 'right'},
-        { text: 'Acciones', value: 'acciones'},
-      ],data:[],
-      headersDoc: [
-        { text: 'Documento', value: 'nombre'},
-        { text: 'Tipo', value: 'tipo'},
-        { text: 'Detalle', value: 'detalle'},
-        //{ text: 'Opcional', value: 'opcional'},
-        { text: 'Jurídico', value: 'juridico'},
-        { text: 'Estatus' , value: 'habilitado'},
-        { text: 'Acciones', value: 'acciones'},
-      ],dataDoc:[],
-      tipo: '',
-      items: [
-        { text: 'Imagen', value: 'I' },
-        { text: 'Texto', value: 'T' },
-      ],
-      itemsOpcional: [
-        { text: 'Si', value: 'S' },
-        { text: 'No', value: 'N' },
-      ],
-      itemsJuridico: [
-        { text: 'Natural', value: 'N' },
-        { text: 'Juridíco', value: 'J' },
-      ],
-      headersCuenta: [
-        { text: 'Banco', value: 'banco'},
-        { text: 'Tipo de Pago', value: 'tipopago'},
-        { text: 'Titular' , value: 'titular'},
-        { text: 'Cédula (ID)', value: 'cedula'},
-        { text: 'Número de Cuenta' , value: 'numerocuenta'},
-        { text: 'Estatus' , value: 'habilitado'},
-        { text: 'Acciones', value: 'acciones'},
-      ],dataCuenta:[], 
-      headersBanco: [
-        { text: 'Nombre', value: 'nombre'},
-        { text: 'Código', value: 'codigo'},
-        { text: 'Estatus' , value: 'habilitado'},
-        { text: 'Acciones', value: 'acciones'},
-      ],dataBanco:[],
-        
-      dataTipoPago:[], 
-      isPasswordVisible: false,
-      dialog: false,
-      dialog_edit:false,
-      dialogDoc: false,
-      dialogeditDoc:false,
-      dialogCuenta: false,
-      dialogeditCuenta:false,      
-      dialogBanco: false,
-      dialogeditBanco:false,
-      id: '',
-      nombre: '',
-      coin: '',
-      tasa: '',
-      imagen: '',
-      detalle:'',
-      opcional:'S',
-      juridico:'',
-      kycventa:true,
-      kyccompra:true,
-      montoventa:0,
-      montocompra:0,
-      bancoId:'',
-      tipopagoId:'',
-      titular:'',
-      cedula:'',
-      telefono:'',
-      numerocuenta:'',
-
-      registro:{
-        id:'',
-        nombre:'',
+  export default {
+    name: "CountriesPage",
+    data() {
+      return {
+        url: null,
+        snackbar: false,
+        text: '',
+        color: '',
+        search: '',
+        headers: [
+          { text: 'País', value: 'nombre'},
+          { text: 'Moneda', value: 'coin'},
+          { text: 'Bandera', value: 'imagen'},
+          { text: 'Activo', value: 'habilitado'},
+          { text: 'Valida KYC Venta', value: 'kycventa'},
+          { text: 'Valida KYC Compra', value: 'kyccompra'},
+          //{ text: 'Monto Mínimo Venta',  value: 'montoventa',  align: 'right'},
+          //{ text: 'Monto Mínimo Compra', value: 'montocompra', align: 'right'},
+          { text: 'Acciones', value: 'acciones'},
+        ],data:[],
+        headersDoc: [
+          { text: 'Documento', value: 'nombre'},
+          { text: 'Tipo', value: 'tipo'},
+          { text: 'Detalle', value: 'detalle'},
+          //{ text: 'Opcional', value: 'opcional'},
+          { text: 'Jurídico', value: 'juridico'},
+          { text: 'Estatus' , value: 'habilitado'},
+          { text: 'Acciones', value: 'acciones'},
+        ],dataDoc:[],
+        tipo: '',
+        items: [
+          { text: 'Imagen', value: 'I' },
+          { text: 'Texto', value: 'T' },
+        ],
+        itemsOpcional: [
+          { text: 'Si', value: 'S' },
+          { text: 'No', value: 'N' },
+        ],
+        itemsJuridico: [
+          { text: 'Natural', value: 'N' },
+          { text: 'Juridíco', value: 'J' },
+        ],
+        headersCuenta: [
+          { text: 'Banco', value: 'banco'},
+          { text: 'Tipo de Pago', value: 'tipopago'},
+          { text: 'Titular' , value: 'titular'},
+          { text: 'Cédula (ID)', value: 'cedula'},
+          { text: 'Número de Cuenta' , value: 'numerocuenta'},
+          { text: 'Estatus' , value: 'habilitado'},
+          { text: 'Acciones', value: 'acciones'},
+        ],dataCuenta:[], 
+        headersBanco: [
+          { text: 'Nombre', value: 'nombre'},
+          { text: 'Código', value: 'codigo'},
+          { text: 'Estatus' , value: 'habilitado'},
+          { text: 'Acciones', value: 'acciones'},
+        ],dataBanco:[],
+          
+        dataTipoPago:[], 
+        isPasswordVisible: false,
+        dialog: false,
+        dialog_edit:false,
+        dialogDoc: false,
+        dialogeditDoc:false,
+        dialogCuenta: false,
+        dialogeditCuenta:false,      
+        dialogBanco: false,
+        dialogeditBanco:false,
+        id: '',
+        nombre: '',
+        codigo: '',
         coin: '',
         tasa: '',
-        imagen:'',
-        kycventa:'',
-        kyccompra:'',
-        montoventa:0,
-        montocompra:0,
-      },
-      registroDoc:{
-        id:'',
-        nombre:'',
-        tipo:'',
+        imagen: '',
         detalle:'',
         opcional:'S',
         juridico:'',
-      },
-      registroCuenta:{
-        id:'',
+        kycventa:true,
+        kyccompra:true,
+        montoventa:0,
+        montocompra:0,
         bancoId:'',
         tipopagoId:'',
         titular:'',
         cedula:'',
         telefono:'',
         numerocuenta:'',
-      },      
-      registroBanco:{
-        id:'',
-        nombre:'',
-        codigo:'',
-      },
-     // tipo: '',
-      permisosUser: JSON.parse(localStorage.permisos),
-      usersAdmin: [],
-      dialogWait: false,
-      dialogSure: false,
-      dataDelete: [],
-      dialogSureDoc: false,
-      dataDeleteDoc: [],
-      dialogSureCuenta: false,
-      dataDeleteCuenta: [],
-      dialogSureBanco: false,
-      dataDeleteBanco: [],
-      icons: {
-        mdiAccountPlus,
-        mdiEyeOutline,
-        mdiEyeOffOutline,
-        mdiClose,
-        mdiPencil,
-        mdiDelete,
-        mdiTextBoxPlusOutline  ,
-        mdiEarthPlus ,
-        mdiCashPlus ,
-        mdiCheckCircle,
-        mdiCancel ,
-        mdiScaleBalance,
-        mdiAccountTie ,
-        mdiBankPlus,
-      },
-    }
-  },
-  mounted() {
-    this.permisosUser.forEach(i => {
-      if (i.modulo === 'UsersAdmin') {
-        this.usersAdmin = i
-     }
-    })
-   console.log(this.usersAdmin)
-    this.fecthData()
-  },
-  methods: {
-    Preview_image() {
-      if (this.registro.imagen){
-        this.url= URL.createObjectURL(this.registro.imagen)
-      }
-      else{
-        console.log(err)
-        this.url = null
-      }
-    },
-    fecthData () {
-      this.dialogWait = true
-      this.axios.get('/paises/').then(response => {
-          this.data = response.data
-          this.dialogWait = false
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    fecthDataDoc (id) {
-      this.axios.get('/paisesdoc/?pais='+id).then(response => {
-          this.dataDoc = response.data
-          //this.fecthData()
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    fecthDataCuenta (id) {
-          this.axios.get('/get-tcuenta-defix/'+id+'').then(response => {
-          this.dataCuenta = response.data
-          //this.fecthData()
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    fecthDataBanco (id) {
-      this.axios.get('/paisbanco/?pais='+id).then(response => {
-          this.dataBanco = response.data
-          //this.fecthData()
-        }).catch(err => {
-          console.log(err)
-        })
-        this.axios.get('/tipopago/').then(response => {
-          this.dataTipoPago = response.data
-          //this.fecthData()
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    createCountry() {
-      const formData = new FormData()
-      formData.append('imagen', this.registro.imagen)
-      formData.append('nombre', this.nombre)
-      formData.append('coin', this.coin)
-      formData.append('tasa', this.tasa)
-      formData.append('kycventa', this.kycventa)
-      formData.append('kyccompra', this.kyccompra)
-      formData.append('montoventa',  this.montoventa)
-      formData.append('montocompra', this.montocompra)
-      console.log('lola',formData)
-      this.axios.post('/paises/', formData).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se guardo correctamente'
-        this.imagen= ''
-        this.nombre= ''
-        this.coin= ''
-        this.tasa= ''
-        this.kycventa= true
-        this.kyccompra= true
-        this.montocompra= 0
-        this.montoventa= 0
-        this.fecthData()
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    createCountryDoc () {
-      const data = {
-        tipo: this.tipo,
-        nombre: this.nombre,
-        detalle: this.detalle,
-        opcional: this.opcional,
-        juridico: this.juridico,
-        pais: this.registro.id,
-      }
-      console.log(data)
-      this.axios.post('/paisesdoc/', data).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se guardo correctamente'
-        this.tipo = ''
-        this.nombre = ''
-        this.detalle = ''
-        this.opcional = 'S'
-        this.juridico = ''
-        this.fecthDataDoc(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    createCountryCuenta () {
-      const data = {
-        banco:this.bancoId,
-        tipopago:this.tipopagoId,
-        titular:this.titular,
-        cedula:this.cedula,
-        telefono:this.telefono,
-        numerocuenta:this.numerocuenta,
-        pais: this.registro.id,
-      }
-      console.log('lola',data)
-      this.axios.post('/kyccuentadefix/', data).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se guardo correctamente'
-        this.bancoId = ''
-        this.tipopagoId = ''
-        this.titular = ''
-        this.cedula = ''
-        this.telefono = ''
-        this.numerocuenta = ''
-        this.fecthDataCuenta(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },         
-    createCountryBanco () {
-      const data = {
-        nombre: this.nombre,
-        codigo: this.codigo,
-        pais: this.registro.id,
-      }
-      console.log(data)
-      this.axios.post('/paisbanco/', data).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se guardo correctamente'
-        this.nombre= ''
-        this.codigo= ''
-        this.fecthDataBanco(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    uploadBandera(){
-      const formData = new FormData()
-      formData.append('imagen', this.registro.imagen)
-      this.$axios.$patch('/paises/'+this.id+'/', formData,{
-        headers: {"Content-Type": "multipart/form-data",},
-      }).then((res)=>{
-        this.$toast.success('Registro exitoso')
-      }).catch((error) => {
-        this.$toast.error('Error en el registro de dato')
-        console.error(error)
-      })
-    },
-    actualizarEstatus(item){     
-      this.axios.patch('/paises/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo el estatus correctamente'
-        this.fecthData()
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    actualizarEstatusDoc(item){  
-      this.axios.patch('/paisesdoc/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo el estatus correctamente'
-        this.fecthDataDoc(this.registro.id)
-        
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    actualizarEstatusCuenta(item){  
-        this.axios.patch('/kyccuentadefix/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo el estatus correctamente'
-        this.fecthDataCuenta(this.registro.id)
-        
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    actualizarEstatusBanco(item){  
-        this.axios.patch('/paisbanco/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
-        console.log(res.data)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo el estatus correctamente'
-        this.fecthDataBanco(this.registro.id)
-        
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error ' + err
-      });
-    },
-    openEditar(item){
-      console.log(item)
-      this.dialog_edit = true
-      this.registro.id = item.id
-      this.registro.nombre = item.nombre
-      this.registro.coin = item.coin
-      this.registro.tasa = item.tasa
-      this.registro.imagen = item.imagen
-      this.registro.habilitado = item.habilitado
-      this.registro.kycventa = item.kycventa
-      this.registro.montocompra = item.montocompra
-      this.registro.montoventa  = item.montoventa
-      this.registro.kyccompra = item.kyccompra
-      this.fecthDataDoc(item.id)
-      this.fecthDataCuenta(item.id)
-      this.fecthDataBanco(item.id)
-    },
-    openEditarDoc(item){
-      console.log(item)
-      this.dialogeditDoc = true
-      this.registroDoc.id = item.id
-      this.registroDoc.nombre = item.nombre
-      this.registroDoc.tipo = item.tipo
-      this.registroDoc.detalle = item.detalle
-      this.registroDoc.opcional = item.opcional
-      this.registroDoc.juridico = item.juridico
-      this.registroDoc.habilitado = item.habilitado
-    },
-    openEditarCuenta(item){
-      console.log(item)
-      this.dialogeditCuenta = true
-      this.registroCuenta.id = item.id
-      this.registroCuenta.bancoId = item.bancoId
-      this.registroCuenta.tipopagoId = item.tipopagoId
-      this.registroCuenta.titular = item.titular
-      this.registroCuenta.cedula = item.cedula
-      this.registroCuenta.telefono = item.telefono
-      this.registroCuenta.numerocuenta = item.numerocuenta
-      this.registroCuenta.habilitado = item.habilitado
-    },
-    openEditarBanco(item){
-      console.log(item)
-      this.dialogeditBanco = true
-      this.registroBanco.id = item.id
-      this.registroBanco.nombre = item.nombre
-      this.registroBanco.codigo = item.codigo
-      this.registroBanco.habilitado = item.habilitado
-    },
-    guardarEdicion() {
-        const formData = new FormData()
-        formData.append('nombre', this.registro.nombre)
-        formData.append('coin', this.registro.coin)
-        formData.append('tasa', this.registro.tasa)
-        formData.append('habilitado', this.registro.habilitado)
-        formData.append('kycventa', this.registro.kycventa)
-        formData.append('kyccompra', this.registro.kyccompra)
-        formData.append('montoventa',  this.registro.montoventa)
-        formData.append('montocompra', this.registro.montocompra)
-        if (this.registro.imagen.lastModified){
-          formData.append('imagen', this.registro.imagen)
-        }
-        this.axios.patch('/paises/'+ this.registro.id + '/', formData).then((res) => {
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo correctamente'
-        this.fecthData()
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      });
-    },
-    guardarEdicionDoc() {
-        const formData = new FormData()
-        formData.append('nombre', this.registroDoc.nombre)
-        formData.append('habilitado', this.registroDoc.habilitado)
-        formData.append('tipo', this.registroDoc.tipo)
-        formData.append('detalle', this.registroDoc.detalle)
-        formData.append('opcional', this.registroDoc.opcional)
-        formData.append('juridico', this.registroDoc.juridico)
-        this.axios.patch('/paisesdoc/'+ this.registroDoc.id + '/', formData).then((res) => {
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo correctamente'
-        this.fecthDataDoc(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      });
-    },
-    guardarEdicionCuenta() {
-        const formData = new FormData()
-        formData.append('banco', this.registroCuenta.bancoId)
-        formData.append('tipopago', this.registroCuenta.tipopagoId)
-        formData.append('titular', this.registroCuenta.titular)
-        formData.append('cedula', this.registroCuenta.cedula)
-        formData.append('telefono', this.registroCuenta.telefono)
-        formData.append('numerocuenta', this.registroCuenta.numerocuenta)
-        formData.append('habilitado', this.registroCuenta.habilitado)
-        this.axios.patch('/kyccuentadefix/'+ this.registroCuenta.id + '/', formData).then((res) => {
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo correctamente'
-        this.fecthDataCuenta(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      });
-    },
-    guardarEdicionBanco() {
-        const formData = new FormData()
-        formData.append('nombre', this.registroBanco.nombre)
-        formData.append('codigo', this.registroBanco.codigo)
-        formData.append('habilitado', this.registroBanco.habilitado)
-        this.axios.patch('/paisbanco/'+ this.registroBanco.id + '/', formData).then((res) => {
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se actualizo correctamente'
-        this.fecthDataBanco(this.registro.id)
-      }).catch((err) => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      });
-    },
-    openDelete (item) {
-      this.dataDelete = item
-      this.dialogSure = true
-    },
-    openDeleteDoc (item) {
-      this.dataDeleteDoc = item
-      this.dialogSureDoc = true
-    },
-    openDeleteCuenta (item) {
-      this.dataDeleteCuenta = item
-      this.dialogSureCuenta = true
-    },
-    openDeleteBanco (item) {
-      this.dataDeleteBanco = item
-      this.dialogSureBanco = true
-    },
-    eliminar () {
-      this.dialogSure = false
-      this.axios.delete('/paises/' + this.dataDelete.id + '/').then(res => {
-        console.log(res)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se elimino correctamente'
-        this.fecthData()
-      }).catch(err => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      })
-    },
-    eliminarDoc () {
-      this.dialogSureDoc = false
-      this.axios.delete('/paisesdoc/' + this.dataDeleteDoc.id + '/').then(res => {
-        console.log(res)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se elimino correctamente'
-        this.fecthDataDoc(this.registro.id)
-      }).catch(err => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      })
-    },
 
-    eliminarCuenta () {
-      this.dialogSureCuenta = false
-      this.axios.delete('/kyccuentadefix/' + this.dataDeleteCuenta.id + '/').then(res => {
-        console.log(res)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se elimino correctamente'
-        this.fecthDataCuenta(this.registro.id)
-      }).catch(err => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
-      })
+        registro:{
+          id:'',
+          nombre:'',
+          coin: '',
+          tasa: '',
+          imagen:'',
+          kycventa:'',
+          kyccompra:'',
+          montoventa:0,
+          montocompra:0,
+        },
+        registroDoc:{
+          id:'',
+          nombre:'',
+          tipo:'',
+          detalle:'',
+          opcional:'S',
+          juridico:'',
+        },
+        registroCuenta:{
+          id:'',
+          bancoId:'',
+          tipopagoId:'',
+          titular:'',
+          cedula:'',
+          telefono:'',
+          numerocuenta:'',
+        },      
+        registroBanco:{
+          id:'',
+          nombre:'',
+          codigo:'',
+        },
+        permissions: JSON.parse(localStorage.getItem("permissions")),
+        usersAdmin: [],
+        dialogWait: false,
+        dialogSure: false,
+        dataDelete: [],
+        dialogSureDoc: false,
+        dataDeleteDoc: [],
+        dialogSureCuenta: false,
+        dataDeleteCuenta: [],
+        dialogSureBanco: false,
+        dataDeleteBanco: [],
+        icons: {
+          mdiAccountPlus,
+          mdiEyeOutline,
+          mdiEyeOffOutline,
+          mdiClose,
+          mdiPencil,
+          mdiDelete,
+          mdiTextBoxPlusOutline  ,
+          mdiEarthPlus ,
+          mdiCashPlus ,
+          mdiCheckCircle,
+          mdiCancel ,
+          mdiScaleBalance,
+          mdiAccountTie ,
+          mdiBankPlus,
+        },
+      }
     },
-    eliminarBanco () {
-      this.dialogSureBanco = false
-      this.axios.delete('/paisbanco/' + this.dataDeleteBanco.id + '/').then(res => {
-        console.log(res)
-        this.snackbar = true
-        this.color = 'primary'
-        this.text = 'Se elimino correctamente'
-        this.fecthDataBanco(this.registro.id)
-      }).catch(err => {
-        console.log(err)
-        this.snackbar = true
-        this.color = '#E53935'
-        this.text = 'Ocurrio un error' + err
+    mounted() {
+      this.permissions.forEach(i => {
+        if (i.modulo === 'UsersAdmin') {
+          this.usersAdmin = i
+      }
       })
-    }
-  },
-}
+      this.fecthData()
+    },
+    methods: {
+      Preview_image() {
+        if (this.registro.imagen){
+          this.url= URL.createObjectURL(this.registro.imagen)
+        }
+        else{
+          console.log(err)
+          this.url = null
+        }
+      },
+      fecthData () {
+        this.dialogWait = true
+        this.axios.get('/paises/').then(response => {
+            this.data = response.data
+            this.dialogWait = false
+          }).catch(err => {
+            console.log(err)
+          })
+      },
+      fecthDataDoc (id) {
+        this.axios.get('/paisesdoc/?pais='+id).then(response => {
+            this.dataDoc = response.data
+            //this.fecthData()
+          }).catch(err => {
+            console.log(err)
+          })
+      },
+      fecthDataCuenta (id) {
+            this.axios.get('/get-tcuenta-sezions/'+id+'').then(response => {
+            this.dataCuenta = response.data
+            //this.fecthData()
+          }).catch(err => {
+            console.log(err)
+          })
+      },
+      fecthDataBanco (id) {
+        this.axios.get('/paisbanco/?pais='+id).then(response => {
+            this.dataBanco = response.data
+            //this.fecthData()
+          }).catch(err => {
+            console.log(err)
+          })
+          this.axios.get('/tipopago/').then(response => {
+            this.dataTipoPago = response.data
+            //this.fecthData()
+          }).catch(err => {
+            console.log(err)
+          })
+      },
+      createCountry() {
+        const formData = new FormData()
+        formData.append('imagen', this.registro.imagen)
+        formData.append('nombre', this.nombre)
+        formData.append('coin', this.coin)
+        formData.append('tasa', this.tasa)
+        formData.append('kycventa', this.kycventa)
+        formData.append('kyccompra', this.kyccompra)
+        formData.append('montoventa',  this.montoventa)
+        formData.append('montocompra', this.montocompra)
+        this.axios.post('/paises/', formData).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se guardo correctamente'
+          this.imagen= ''
+          this.nombre= ''
+          this.coin= ''
+          this.tasa= ''
+          this.kycventa= true
+          this.kyccompra= true
+          this.montocompra= 0
+          this.montoventa= 0
+          this.fecthData()
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      createCountryDoc () {
+        const data = {
+          tipo: this.tipo,
+          nombre: this.nombre,
+          detalle: this.detalle,
+          opcional: this.opcional,
+          juridico: this.juridico,
+          pais: this.registro.id,
+        }
+        this.axios.post('/paisesdoc/', data).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se guardo correctamente'
+          this.tipo = ''
+          this.nombre = ''
+          this.detalle = ''
+          this.opcional = 'S'
+          this.juridico = ''
+          this.fecthDataDoc(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      createCountryCuenta () {
+        const data = {
+          banco:this.bancoId,
+          tipopago:this.tipopagoId,
+          titular:this.titular,
+          cedula:this.cedula,
+          telefono:this.telefono,
+          numerocuenta:this.numerocuenta,
+          pais: this.registro.id,
+        }
+        this.axios.post('/kyc-cuenta-sezions/', data).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se guardo correctamente'
+          this.bancoId = ''
+          this.tipopagoId = ''
+          this.titular = ''
+          this.cedula = ''
+          this.telefono = ''
+          this.numerocuenta = ''
+          this.fecthDataCuenta(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },         
+      createCountryBanco () {
+        const data = {
+          nombre: this.nombre,
+          codigo: this.codigo,
+          pais: this.registro.id,
+        }
+        this.axios.post('/paisbanco/', data).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se guardo correctamente'
+          this.nombre= ''
+          this.codigo= ''
+          this.fecthDataBanco(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      uploadBandera(){
+        const formData = new FormData()
+        formData.append('imagen', this.registro.imagen)
+        this.$axios.$patch('/paises/'+this.id+'/', formData,{
+          headers: {"Content-Type": "multipart/form-data",},
+        }).then((res)=>{
+          this.$toast.success('Registro exitoso')
+        }).catch((error) => {
+          this.$toast.error('Error en el registro de dato')
+          console.error(error)
+        })
+      },
+      actualizarEstatus(item){     
+        this.axios.patch('/paises/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo el estatus correctamente'
+          this.fecthData()
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      actualizarEstatusDoc(item){  
+        this.axios.patch('/paisesdoc/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo el estatus correctamente'
+          this.fecthDataDoc(this.registro.id)
+          
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      actualizarEstatusCuenta(item){  
+          this.axios.patch('/kyc-cuenta-sezions/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo el estatus correctamente'
+          this.fecthDataCuenta(this.registro.id)
+          
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      actualizarEstatusBanco(item){  
+          this.axios.patch('/paisbanco/'+ item.id + '/', {'habilitado':item.habilitado}).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo el estatus correctamente'
+          this.fecthDataBanco(this.registro.id)
+          
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error ' + err
+        });
+      },
+      openEditar(item){
+        this.dialog_edit = true
+        this.registro.id = item.id
+        this.registro.nombre = item.nombre
+        this.registro.coin = item.coin
+        this.registro.tasa = item.tasa
+        this.registro.imagen = item.imagen
+        this.registro.habilitado = item.habilitado
+        this.registro.kycventa = item.kycventa
+        this.registro.montocompra = item.montocompra
+        this.registro.montoventa  = item.montoventa
+        this.registro.kyccompra = item.kyccompra
+        this.fecthDataDoc(item.id)
+        this.fecthDataCuenta(item.id)
+        this.fecthDataBanco(item.id)
+      },
+      openEditarDoc(item){
+        this.dialogeditDoc = true
+        this.registroDoc.id = item.id
+        this.registroDoc.nombre = item.nombre
+        this.registroDoc.tipo = item.tipo
+        this.registroDoc.detalle = item.detalle
+        this.registroDoc.opcional = item.opcional
+        this.registroDoc.juridico = item.juridico
+        this.registroDoc.habilitado = item.habilitado
+      },
+      openEditarCuenta(item){
+        this.dialogeditCuenta = true
+        this.registroCuenta.id = item.id
+        this.registroCuenta.bancoId = item.bancoId
+        this.registroCuenta.tipopagoId = item.tipopagoId
+        this.registroCuenta.titular = item.titular
+        this.registroCuenta.cedula = item.cedula
+        this.registroCuenta.telefono = item.telefono
+        this.registroCuenta.numerocuenta = item.numerocuenta
+        this.registroCuenta.habilitado = item.habilitado
+      },
+      openEditarBanco(item){
+        this.dialogeditBanco = true
+        this.registroBanco.id = item.id
+        this.registroBanco.nombre = item.nombre
+        this.registroBanco.codigo = item.codigo
+        this.registroBanco.habilitado = item.habilitado
+      },
+      guardarEdicion() {
+          const formData = new FormData()
+          formData.append('nombre', this.registro.nombre)
+          formData.append('coin', this.registro.coin)
+          formData.append('tasa', this.registro.tasa)
+          formData.append('habilitado', this.registro.habilitado)
+          formData.append('kycventa', this.registro.kycventa)
+          formData.append('kyccompra', this.registro.kyccompra)
+          formData.append('montoventa',  this.registro.montoventa)
+          formData.append('montocompra', this.registro.montocompra)
+          if (this.registro.imagen.lastModified){
+            formData.append('imagen', this.registro.imagen)
+          }
+          this.axios.patch('/paises/'+ this.registro.id + '/', formData).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo correctamente'
+          this.fecthData()
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        });
+      },
+      guardarEdicionDoc() {
+          const formData = new FormData()
+          formData.append('nombre', this.registroDoc.nombre)
+          formData.append('habilitado', this.registroDoc.habilitado)
+          formData.append('tipo', this.registroDoc.tipo)
+          formData.append('detalle', this.registroDoc.detalle)
+          formData.append('opcional', this.registroDoc.opcional)
+          formData.append('juridico', this.registroDoc.juridico)
+          this.axios.patch('/paisesdoc/'+ this.registroDoc.id + '/', formData).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo correctamente'
+          this.fecthDataDoc(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        });
+      },
+      guardarEdicionCuenta() {
+          const formData = new FormData()
+          formData.append('banco', this.registroCuenta.bancoId)
+          formData.append('tipopago', this.registroCuenta.tipopagoId)
+          formData.append('titular', this.registroCuenta.titular)
+          formData.append('cedula', this.registroCuenta.cedula)
+          formData.append('telefono', this.registroCuenta.telefono)
+          formData.append('numerocuenta', this.registroCuenta.numerocuenta)
+          formData.append('habilitado', this.registroCuenta.habilitado)
+          this.axios.patch('/kyc-cuenta-sezions/'+ this.registroCuenta.id + '/', formData).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo correctamente'
+          this.fecthDataCuenta(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        });
+      },
+      guardarEdicionBanco() {
+          const formData = new FormData()
+          formData.append('nombre', this.registroBanco.nombre)
+          formData.append('codigo', this.registroBanco.codigo)
+          formData.append('habilitado', this.registroBanco.habilitado)
+          this.axios.patch('/paisbanco/'+ this.registroBanco.id + '/', formData).then((res) => {
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se actualizo correctamente'
+          this.fecthDataBanco(this.registro.id)
+        }).catch((err) => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        });
+      },
+      openDelete (item) {
+        this.dataDelete = item
+        this.dialogSure = true
+      },
+      openDeleteDoc (item) {
+        this.dataDeleteDoc = item
+        this.dialogSureDoc = true
+      },
+      openDeleteCuenta (item) {
+        this.dataDeleteCuenta = item
+        this.dialogSureCuenta = true
+      },
+      openDeleteBanco (item) {
+        this.dataDeleteBanco = item
+        this.dialogSureBanco = true
+      },
+      eliminar () {
+        this.dialogSure = false
+        this.axios.delete('/paises/' + this.dataDelete.id + '/').then(res => {
+          console.log(res)
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se elimino correctamente'
+          this.fecthData()
+        }).catch(err => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        })
+      },
+      eliminarDoc () {
+        this.dialogSureDoc = false
+        this.axios.delete('/paisesdoc/' + this.dataDeleteDoc.id + '/').then(res => {
+          console.log(res)
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se elimino correctamente'
+          this.fecthDataDoc(this.registro.id)
+        }).catch(err => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        })
+      },
+
+      eliminarCuenta () {
+        this.dialogSureCuenta = false
+        this.axios.delete('/kyc-cuenta-sezions/' + this.dataDeleteCuenta.id + '/').then(res => {
+          console.log(res)
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se elimino correctamente'
+          this.fecthDataCuenta(this.registro.id)
+        }).catch(err => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        })
+      },
+      eliminarBanco () {
+        this.dialogSureBanco = false
+        this.axios.delete('/paisbanco/' + this.dataDeleteBanco.id + '/').then(res => {
+          console.log(res)
+          this.snackbar = true
+          this.color = 'primary'
+          this.text = 'Se elimino correctamente'
+          this.fecthDataBanco(this.registro.id)
+        }).catch(err => {
+          console.log(err)
+          this.snackbar = true
+          this.color = '#E53935'
+          this.text = 'Ocurrio un error' + err
+        })
+      }
+    },
+  }
 </script>
 
 <style lang="scss">

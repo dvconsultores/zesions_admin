@@ -187,7 +187,7 @@
       top
       absolute
       :color="color"
-      :multi-line="multiLine"
+      multi-line
       elevation="24"
     >
       {{ text }}
@@ -210,6 +210,7 @@
 import { mdiPercentOutline, mdiContentSaveOutline, mdiCurrencyUsd  } from '@mdi/js'
 
 export default {
+  name: "TasaPage",
   data() {
     return {
       search: null,
@@ -261,8 +262,7 @@ export default {
       
       this.axios.get(this.query).then(response => {
         this.dataTasa = response.data
-          this.dialogWait = false
-        console.log(response.data)
+        this.dialogWait = false
       }).catch(err => {
         console.log(err)
       })
@@ -278,7 +278,6 @@ export default {
         })
     },
     saveCommission (item) {
-      console.log(item)
       this.axios.patch('/paisbanco/' + item.id + '/', {
         monto: item.monto,
         montomin: item.montomin,

@@ -4,23 +4,23 @@
       <v-card class="auth-card">
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
-            <v-img
-              :src="require('@/assets/images/zesions/logo.jpg')"
-              max-height="180px"
-              max-width="50px"
-              alt="logo"
-              contain
-              class="me-3 "
-            ></v-img>
+          <v-img
+            :src="require('@/assets/images/sezions/logo.jpg')"
+            max-height="180px"
+            max-width="50px"
+            alt="logo"
+            contain
+            class="me-3 "
+          ></v-img>
 
-            <h2 class="text-2xl font-weight-semibold">
-              Zesions
-            </h2>
+          <h2 class="text-2xl font-weight-semibold">
+            Sezions
+          </h2>
         </v-card-title>
 
         <!-- login form -->
         <v-card-text>
-          <v-form @submit="login()">
+          <v-form>
             <v-text-field
               v-model="username"
               outlined
@@ -28,6 +28,8 @@
               hide-details
               required
               class="mb-3"
+              autofocus
+              @keydown="login"
             ></v-text-field>
 
             <v-text-field
@@ -39,14 +41,15 @@
               :append-icon="hide_password ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
               hide-details
               @click:append="hide_password = !hide_password"
-              @
+              @keydown="login"
             ></v-text-field>
 
             <v-btn
               block
               color="primary"
               class="mt-6"
-              type="submit"
+              type="button"
+              @click="login()"
             >
               Iniciar sesion
             </v-btn>
@@ -86,6 +89,7 @@
 import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 
 export default {
+  name: "LoginPage",
   setup() {
     return {
       icons: {
@@ -102,19 +106,25 @@ export default {
     }
   },
   mounted() {
-    
+    if (localStorage.auth_token !== undefined) {
+      this.$router.push('/dashboard')
+    } 
   },
   methods: {
-    login() {
-      this.axios.post('/login/', { username: this.username, password: this.password }).then((res) => {
-        localStorage.dataUser = JSON.stringify(res.data)
-        localStorage.Authorization = res.data.token
-        localStorage.permisos = JSON.stringify(res.data.permisos)
-        this.axios.defaults.headers.common.Authorization = 'token ' + res.data.token
-        this.$router.push({name: 'dashboard'})
-      }).catch((err) => {
-        console.log(err)
-      });
+    login(key = null) {
+      var validate = true
+      if (key) { if (key.code !== "Enter") {validate = false}}
+      if (validate) {
+        this.axios.post('/login/', { username: this.username, password: this.password }).then((res) => {
+          localStorage.setItem("data_user", JSON.stringify(res.data));
+          localStorage.setItem("auth_token", res.data.token);
+          localStorage.setItem("permissions", JSON.stringify(res.data.permisos));
+          this.axios.defaults.headers.common.Authorization = 'token ' + res.data.token;
+          this.$router.push('/dashboard');
+        }).catch((err) => {
+          console.log(err)
+        });
+      }
     },
   },
 }

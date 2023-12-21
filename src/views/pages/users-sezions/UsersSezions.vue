@@ -44,7 +44,7 @@
             <v-col cols="12">
               <v-data-table
                 :headers="headers"
-                :items="dataUser"
+                :items="data_user"
                 :items-per-page="10"
                 :search="search"
                 class="elevation-1"
@@ -84,12 +84,13 @@
 import { mdiAccountOutline, mdiLockOpenOutline, mdiInformationOutline } from '@mdi/js'
 
 export default {
+  name: "UserSezions",
   data() {
     return {
       search: '',
       tab:null,
       tabs: [
-        { title: 'Lista de usuarios defix', icon: mdiAccountOutline },
+        { title: 'Lista de usuarios sezions', icon: mdiAccountOutline },
       ],
       icons: {
         mdiAccountOutline,
@@ -99,7 +100,7 @@ export default {
       headers: [
         { text: 'Usuarios', value: 'users' },
       ],
-      dataUser: [],
+      data_user: [],
       dialogWait: false
     }
   },
@@ -109,11 +110,9 @@ export default {
   methods: {
     userData() {
       this.dialogWait = true
-      // this.axios.defaults.headers.common.Authorization = localStorage.Authorization
-      this.axios.get('/get-users-defix').then(response => {
-        console.log(response.data)
+      this.axios.get('/get-users-sezions').then(response => {
         response.data.forEach(element => {
-          this.dataUser.push({ users: element.defix_id })
+          this.data_user.push({ users: element.sezions_id })
           this.dialogWait = false
         })
       }).catch(err => {

@@ -32,16 +32,15 @@
           style="vertical-align:middle"
         >
           <span class="text--primary font-weight-semibold mb-n1">
-            {{ user }}
+            {{ username }}
           </span>
-          <!-- <small class="text--disabled text-capitalize">Admin</small> -->
         </div>
       </div>
 
       <v-divider></v-divider>
 
       <!-- Logout -->
-      <v-list-item link @click="logout()">
+      <v-list-item link @click="$emit('logOut')">
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiLogoutVariant }}
@@ -68,6 +67,7 @@ import {
 } from '@mdi/js'
 
 export default {
+  name: "AppBarUserMenu",
   setup() {
     return {
       icons: {
@@ -84,25 +84,16 @@ export default {
   },
   data() {
     return {
-      dataUser: [],
-      user: '',
-      
+      username: '',
     }
   },
   mounted() {
-    this.dataUser = JSON.parse(localStorage.dataUser)
-    this.user = this.dataUser.data.username
-    console.log(this.dataUser)
+    this.initUser()
   },
   methods: {
-    logout () {
-      localStorage.dataUser = ''
-      localStorage.email = ''
-      localStorage.iduser = ''
-      localStorage.Authorization = ''
-      localStorage.permisos = ''
-      localStorage.removeItem('Authorization');
-      this.$router.push('/pages/login')
+    initUser() {
+      var user = JSON.parse(localStorage.getItem('data_user'))
+      if (user) {this.username = user.data.username}
     },
   },
 }

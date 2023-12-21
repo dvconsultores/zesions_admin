@@ -1,6 +1,6 @@
 {
-  "name": "zesion-admin",
-  "description": "Proyecto de administracion del aplicativo zesions",
+  "name": "sezions-admin",
+  "description": "Proyecto de administracion del aplicativo sezions",
   "license": "MIT",
   "version": "1.0.3",
   "author": {
@@ -17,8 +17,8 @@
   },
   "homepage": "https://dvconsultores.com/",
   "keywords": [
-    "administrador zesions",
-    "admin zesions"
+    "administrador sezions",
+    "admin sezions"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",

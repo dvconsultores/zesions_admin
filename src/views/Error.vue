@@ -31,8 +31,8 @@
 
       <v-btn
         color="primary"
-        to="/"
         class="mb-4"
+        @click="toHome"
       >
         Back to home
       </v-btn>
@@ -44,6 +44,7 @@
 import { mdiAlert } from '@mdi/js'
 
 export default {
+  name: "ErrorPage",
   setup() {
     return {
       icons: {
@@ -51,6 +52,15 @@ export default {
       },
     }
   },
+  methods: {
+    toHome() {
+      if (localStorage.getItem("data_user")) {
+        this.$router.push('/dashboard')
+      } else {
+        this.$router.push('/login')
+      }
+    }
+  }
 }
 </script>
 
