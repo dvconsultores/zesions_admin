@@ -124,8 +124,8 @@
                 <v-text-field
                   v-model="username"
                   outlined
-                  label="Username"
-                  placeholder="JohnDoe"
+                  label="Nombre"
+                  placeholder="Escriba aqui el nombre del usuario"
                   hide-details
                   class="mb-3"
                   dense
@@ -147,7 +147,7 @@
                   v-model="password"
                   outlined
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  label="Password"
+                  label="Clave"
                   placeholder="············"
                   :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
                   hide-details
@@ -516,7 +516,7 @@ export default {
       ],
       permisos: [
         {
-          nombre: "UsuariosSezions",
+          nombre: "Usuarios",
           leer: false,
           escribir: false,
           borrar: false,

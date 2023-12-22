@@ -114,7 +114,7 @@ export default {
           element.text = 'Balance'
           element.icon = mdiHomeOutline
           element.to = '/dashboard'
-        } else if (element.modulo === 'UsuariosSezions') {
+        } else if (element.modulo === 'Usuarios') {
           element.text = 'Usuarios Sezions'
           element.icon = mdiAccountDetailsOutline
           element.to = '/pages/UsersSezions'

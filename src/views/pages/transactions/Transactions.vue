@@ -34,7 +34,7 @@
               :search="search"
               class="elevation-1"
             >
-              <template v-slot:item.hash="{ item }">
+              <template v-slot:[`item.hash`]="{ item }">
                 <a :href="item.hashUrl" target="_blank">
                   {{ item.hash }}
                 </a>
